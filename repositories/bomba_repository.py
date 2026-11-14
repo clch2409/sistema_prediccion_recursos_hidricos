@@ -1,0 +1,100 @@
+"""
+repositories/bomba_repository.py
+Consultas SQL de Sistema_Bombeo e Historia_Bombeo.
+
+Un "ciclo" de bombeo es una fila de Historia_Bombeo:
+  - Cuando la bomba se enciende  -> se inserta una fila con fecha_hora_apagado = NULL
+  - Cuando la bomba se apaga     -> se completa esa fila con la hora y los litros inyectados
+"""
+from database import conexion
+from models.bomba import SistemaBombeo
+
+
+def _fila_a_bomba(fila):
+    return SistemaBombeo(
+        id_bomba=fila.id_bomba,
+        id_reservorio=fila.id_reservorio,
+        nombre=fila.nombre,
+        modelo=fila.modelo,
+        caudal_l_s=float(fila.caudal_l_s or 0),
+        consumo_kw=float(fila.consumo_kw or 0),
+        estado=bool(fila.estado),
+        horas_iniciales=float(fila.horas_iniciales or 0),
+    )
+
+
+# Columnas de Sistema_Bombeo. Se usa un alias en minúsculas porque en la base
+# la columna se llama caudal_L_s y pyodbc distingue mayúsculas al leer.
+_COLUMNAS_BOMBA = ("b.id_bomba, b.id_reservorio, b.nombre, b.modelo, "
+                   "b.caudal_L_s AS caudal_l_s, b.consumo_kw, b.estado, b.horas_iniciales")
+
+
+class BombaRepository:
+
+    def listar(self):
+        filas = conexion.consultar(
+            f"SELECT {_COLUMNAS_BOMBA}, r.nombre AS nombre_reservorio, r.ubicacion "
+            "FROM Sistema_Bombeo b INNER JOIN Reservorio r ON r.id_reservorio = b.id_reservorio "
+            "ORDER BY b.id_bomba"
+        )
+        bombas = []
+        for f in filas:
+            bomba = _fila_a_bomba(f)
+            bomba.nombre_reservorio = f.nombre_reservorio
+            bomba.ubicacion = f.ubicacion
+            bombas.append(bomba)
+        return bombas
+
+    def obtener_por_reservorio(self, id_reservorio):
+        filas = conexion.consultar(
+            f"SELECT {_COLUMNAS_BOMBA} FROM Sistema_Bombeo b WHERE b.id_reservorio = ?",
+            (id_reservorio,)
+        )
+        if not filas:
+            return None
+        return _fila_a_bomba(filas[0])
+
+    # ---------- Ciclos de encendido / apagado ----------
+    def obtener_ciclo_abierto(self, id_bomba):
+        """Devuelve (id_historial, fecha_encendido) del ciclo en curso, o None si está apagada."""
+        filas = conexion.consultar(
+            "SELECT TOP 1 id_historial, fecha_hora_encendido FROM Historia_Bombeo "
+            "WHERE id_bomba = ? AND fecha_hora_apagado IS NULL "
+            "ORDER BY fecha_hora_encendido DESC",
+            (id_bomba,),
+        )
+        if not filas:
+            return None
+        return filas[0].id_historial, filas[0].fecha_hora_encendido
+
+    def abrir_ciclo(self, id_bomba, ahora):
+        conexion.ejecutar(
+            "INSERT INTO Historia_Bombeo (id_bomba, fecha_hora_encendido) VALUES (?, ?)",
+            (id_bomba, ahora),
+        )
+
+    def cerrar_ciclo(self, id_historial, ahora, volumen_inyectado):
+        conexion.ejecutar(
+            "UPDATE Historia_Bombeo SET fecha_hora_apagado = ?, volumen_inyectado_estimado = ? "
+            "WHERE id_historial = ?",
+            (ahora, volumen_inyectado, id_historial),
+        )
+
+    def contar_ciclos_ultima_hora(self, id_bomba, ahora):
+        """Cuántas veces se encendió la bomba en los últimos 60 minutos."""
+        filas = conexion.consultar(
+            "SELECT COUNT(*) AS total FROM Historia_Bombeo "
+            "WHERE id_bomba = ? AND fecha_hora_encendido >= DATEADD(MINUTE, -60, ?)",
+            (id_bomba, ahora),
+        )
+        return filas[0].total
+
+    def horas_operacion(self, id_bomba, horas_iniciales, ahora):
+        """Horas iniciales + suma de la duración de todos los ciclos registrados."""
+        filas = conexion.consultar(
+            "SELECT ISNULL(SUM(DATEDIFF(SECOND, fecha_hora_encendido, "
+            "                           ISNULL(fecha_hora_apagado, ?))), 0) AS segundos "
+            "FROM Historia_Bombeo WHERE id_bomba = ?",
+            (ahora, id_bomba),
+        )
+        return horas_iniciales + filas[0].segundos / 3600
