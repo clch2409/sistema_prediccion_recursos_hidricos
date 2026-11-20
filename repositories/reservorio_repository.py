@@ -1,12 +1,6 @@
-"""
-repositories/reservorio_repository.py
-Consultas SQL de la tabla Reservorio. El repositorio solo habla con la base de datos
-y devuelve objetos del modelo: no tiene lógica de negocio.
-"""
 from database import conexion
 from models.reservorio import Reservorio
 
-# Subconsultas: último nivel y última fecha de lectura de los módulos del reservorio
 _SQL_BASE = """
 SELECT r.id_reservorio, r.nombre, r.capacidad_maxima, r.ubicacion, r.fecha_construccion,
        (SELECT TOP 1 l.nivel_agua FROM Lecturas l
@@ -26,7 +20,7 @@ def _fila_a_reservorio(fila):
     return Reservorio(
         id_reservorio=fila.id_reservorio,
         nombre=fila.nombre,
-        capacidad_maxima=float(fila.capacidad_maxima),   # en la BD es DECIMAL; lo pasamos a float
+        capacidad_maxima=float(fila.capacidad_maxima),
         ubicacion=fila.ubicacion,
         fecha_construccion=fila.fecha_construccion,
         porcentaje=porcentaje,
@@ -35,7 +29,6 @@ def _fila_a_reservorio(fila):
 
 
 class ReservorioRepository:
-
     def listar(self):
         filas = conexion.consultar(_SQL_BASE + " ORDER BY r.id_reservorio")
         return [_fila_a_reservorio(f) for f in filas]

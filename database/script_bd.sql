@@ -1,8 +1,10 @@
-/* id_modulo ahora es VARCHAR(30) y guarda el codigo del hardware, ej: EMI-B4F53904A7AC / REC-066CFF5748755750.
-   Cambia en: Modulo (PK), Lecturas.id_modulo y Alertas.id_modulo. */
+IF DB_ID('SISTEMA_RECURSOS_HIDRICOS') IS NULL
+    CREATE DATABASE [SISTEMA_RECURSOS_HIDRICOS]
+GO
+
 USE [SISTEMA_RECURSOS_HIDRICOS]
 GO
-/****** Objeto: Table [dbo].[Alertas] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -13,13 +15,13 @@ CREATE TABLE [dbo].[Alertas](
 	[tipo_alerta] [varchar](100) NULL,
 	[fecha_hora] [datetime] NOT NULL,
 	[resuelta] [bit] NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_alertas] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Consumo] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -29,13 +31,13 @@ CREATE TABLE [dbo].[Consumo](
 	[id_reservorio] [int] NOT NULL,
 	[hora_fecha] [datetime] NOT NULL,
 	[caudal_salida] [decimal](10, 2) NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_consumo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Historia_Bombeo] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -46,13 +48,13 @@ CREATE TABLE [dbo].[Historia_Bombeo](
 	[fecha_hora_encendido] [datetime] NOT NULL,
 	[fecha_hora_apagado] [datetime] NULL,
 	[volumen_inyectado_estimado] [decimal](10, 2) NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_historial] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Lecturas] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -63,13 +65,13 @@ CREATE TABLE [dbo].[Lecturas](
 	[fecha_hora] [datetime] NOT NULL,
 	[nivel_agua] [decimal](10, 2) NULL,
 	[calidad_senal] [int] NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_lectura] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Mantenimiento] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -80,13 +82,13 @@ CREATE TABLE [dbo].[Mantenimiento](
 	[costo] [decimal](10, 2) NULL,
 	[descripcion] [text] NULL,
 	[fecha_intervencion] [date] NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_mantenimiento] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Modulo] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -99,13 +101,13 @@ CREATE TABLE [dbo].[Modulo](
 	[altura_instalacion] [decimal](10, 2) NULL,
 	[estado] [bit] NOT NULL,
 	[fecha_estado] [datetime] NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_modulo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Reservorio] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -116,13 +118,13 @@ CREATE TABLE [dbo].[Reservorio](
 	[capacidad_maxima] [decimal](10, 2) NOT NULL,
 	[ubicacion] [varchar](150) NULL,
 	[fecha_construccion] [date] NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_reservorio] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Sistema_Bombeo] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -136,13 +138,13 @@ CREATE TABLE [dbo].[Sistema_Bombeo](
 	[consumo_kw] [decimal](10, 2) NULL,
 	[estado] [bit] NOT NULL,
 	[horas_iniciales] [decimal](10, 2) NOT NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_bomba] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Tipo_Modulo] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -152,13 +154,13 @@ CREATE TABLE [dbo].[Tipo_Modulo](
 	[nombre_modulo] [varchar](100) NOT NULL,
 	[margen_error_cm] [decimal](5, 2) NULL,
 	[frecuencia_lectura_segundos] [int] NOT NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_tipo_modulo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Tipo_Usuario] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -166,17 +168,17 @@ GO
 CREATE TABLE [dbo].[Tipo_Usuario](
 	[id_tipo_usuario] [int] IDENTITY(1,1) NOT NULL,
 	[nombre_tipo] [varchar](50) NOT NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_tipo_usuario] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
+UNIQUE NONCLUSTERED
 (
 	[nombre_tipo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Objeto: Table [dbo].[Usuarios] Fecha de script: 13/11/2026 21:02:07 ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -186,11 +188,11 @@ CREATE TABLE [dbo].[Usuarios](
 	[id_tipo_usuario] [int] NOT NULL,
 	[usuario] [varchar](50) NOT NULL,
 	[contrasena] [varchar](255) NOT NULL,
-PRIMARY KEY CLUSTERED 
+PRIMARY KEY CLUSTERED
 (
 	[id_usuario] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
+UNIQUE NONCLUSTERED
 (
 	[usuario] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]

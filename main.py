@@ -1,9 +1,3 @@
-"""
-main.py - Punto de entrada. Ejecutar con:  python main.py
-
-Aquí solo se "arma" el sistema:
-   MQTT  ->  MensajeController  ->  Base de datos  ->  Controladores  ->  Vistas
-"""
 import tkinter as tk
 
 from controllers.bombeo_controller import BombeoController
@@ -22,7 +16,6 @@ def main():
     raiz.title("Gestión y Predicción de Reservas Hídricas")
     raiz.geometry("1150x650")
 
-    # ---- Ingesta de datos (MQTT) ----
     mensajes = MensajeController()
     mqtt = MqttService(mensajes.procesar_mensaje)
     mensajes.set_publicador(mqtt.publicar_comando)
@@ -39,7 +32,6 @@ def main():
         "bombeo": BombeoController(),
     }
 
-    # ---- Login y luego ventana principal ----
     login_controller = LoginController()
     vista_login = LoginView(raiz, login_controller, al_entrar=lambda: abrir_principal())
     vista_login.pack(expand=True)

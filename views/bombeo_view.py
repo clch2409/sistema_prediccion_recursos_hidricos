@@ -1,4 +1,3 @@
-"""views/bombeo_view.py - Horas de operación y ciclos de las bombas."""
 from tkinter import ttk
 
 import config
@@ -6,7 +5,6 @@ from views import componentes as c
 
 
 class BombeoView(ttk.Frame):
-
     def __init__(self, padre, bombeo_controller):
         super().__init__(padre)
         self.controller = bombeo_controller

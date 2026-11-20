@@ -1,11 +1,9 @@
-"""views/modulos_view.py - Estado de los módulos emisores y receptores."""
 from tkinter import ttk
 
 from views import componentes as c
 
 
 class ModulosView(ttk.Frame):
-
     def __init__(self, padre, reservorio_controller):
         super().__init__(padre)
         self.controller = reservorio_controller

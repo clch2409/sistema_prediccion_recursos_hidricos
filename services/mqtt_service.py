@@ -1,9 +1,3 @@
-"""
-services/mqtt_service.py
-Conexión con la pasarela MQTT (HiveMQ Cloud). Es la misma idea del archivo demo1.py,
-pero organizada en una clase y sin imprimir: cuando llega un JSON se lo entrega
-a una función (callback) que decide qué hacer con él.
-"""
 import json
 
 import paho.mqtt.client as mqtt
@@ -12,11 +6,7 @@ import config
 
 
 class MqttService:
-
     def __init__(self, al_recibir_datos):
-        """
-        al_recibir_datos: función que se llama así -> al_recibir_datos(id_topic, datos_dict)
-        """
         self.al_recibir_datos = al_recibir_datos
 
         self.client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
@@ -25,7 +15,6 @@ class MqttService:
         self.client.on_connect = self._on_connect
         self.client.on_message = self._on_message
 
-    # ---------- Callbacks de paho ----------
     def _on_connect(self, client, userdata, flags, reason_code, properties=None):
         if reason_code == 0:
             print("Conectado exitosamente a la pasarela MQTT de HiveMQ")
@@ -41,9 +30,7 @@ class MqttService:
         except Exception as error:
             print(f"Error procesando mensaje MQTT: {error}")
 
-    # ---------- Métodos públicos ----------
     def iniciar(self):
-        """Conecta y escucha en un hilo aparte (así la ventana no se congela)."""
         print("Conectando al broker...")
         self.client.connect(config.MQTT_BROKER, config.MQTT_PORT, 60)
         self.client.loop_start()
@@ -53,6 +40,5 @@ class MqttService:
         self.client.disconnect()
 
     def publicar_comando(self, id_reservorio, comando):
-        """Envía una orden (diccionario) al receptor del reservorio. Ej: {"bomba": "OFF"}"""
         topic = config.MQTT_TOPIC_COMANDO.format(id=id_reservorio)
         self.client.publish(topic, json.dumps(comando))

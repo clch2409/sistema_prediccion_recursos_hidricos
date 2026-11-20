@@ -1,4 +1,3 @@
-# ---------- Python ----------
 __pycache__/
 *.py[cod]
 *.pyo
@@ -6,35 +5,25 @@ __pycache__/
 build/
 dist/
 
-# ---------- Entornos virtuales ----------
 venv/
 .venv/
 env/
 .env
 
-# ---------- IDEs y editores ----------
 .vscode/
 .idea/
 *.swp
 
-# ---------- Sistema operativo ----------
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ---------- Archivos generados / temporales ----------
 *.log
 *.zip
 *.bak
 *.tmp
 
-# ---------- Base de datos local ----------
 *.mdf
 *.ldf
 *.bacpac
 
-# ---------- Credenciales ----------
-# config.py trae el usuario/clave de HiveMQ y el servidor SQL.
-# Si subes el proyecto a un repositorio público, descomenta la línea siguiente
-# y guarda una copia sin datos reales como config.example.py
-# config.py

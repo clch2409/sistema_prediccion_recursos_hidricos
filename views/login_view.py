@@ -1,12 +1,9 @@
-"""views/login_view.py - Pantalla de inicio de sesión."""
 import tkinter as tk
 from tkinter import ttk, messagebox
 
 
 class LoginView(ttk.Frame):
-
     def __init__(self, padre, login_controller, al_entrar):
-        """al_entrar: función que se ejecuta cuando el login es correcto."""
         super().__init__(padre, padding=30)
         self.login_controller = login_controller
         self.al_entrar = al_entrar

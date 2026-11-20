@@ -1,27 +1,12 @@
-"""
-services/prediccion_service.py
-Predicción de cuándo se vaciará un reservorio usando una regresión lineal simple.
-
-Idea:
-  1. Tomamos las lecturas recientes y nos quedamos con el último "tramo descendente"
-     (el nivel viene bajando porque la gente consume agua y la bomba está apagada).
-  2. Ajustamos una recta nivel = a * horas + b con numpy.polyfit.
-  3. La pendiente 'a' (negativa) es el consumo en % por hora.
-  4. horas restantes = nivel actual / consumo.
-"""
 from datetime import timedelta
 
 import numpy as np
 import pandas as pd
 
-TOLERANCIA = 0.5   # % de ruido que aceptamos en el sensor
+TOLERANCIA = 0.5
 
 
 def obtener_tramo_descendente(lecturas):
-    """
-    Recorre las lecturas desde la más nueva hacia atrás y se detiene cuando
-    encuentra una subida (la bomba llenó el reservorio).
-    """
     if not lecturas:
         return []
     tramo = [lecturas[-1]]
@@ -34,15 +19,10 @@ def obtener_tramo_descendente(lecturas):
 
 
 def calcular_prediccion(lecturas, capacidad_maxima):
-    """
-    Devuelve un diccionario con la predicción, o None si no hay datos suficientes
-    (menos de 2 lecturas, o el nivel no está bajando).
-    """
     tramo = obtener_tramo_descendente(lecturas)
     if len(tramo) < 2:
         return None
 
-    # Pandas: armamos una tabla con fecha, nivel y "horas desde la primera lectura"
     tabla = pd.DataFrame({
         "fecha": [l.fecha_hora for l in tramo],
         "nivel": [float(l.nivel_agua) for l in tramo],

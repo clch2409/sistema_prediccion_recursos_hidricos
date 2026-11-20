@@ -1,11 +1,3 @@
-"""
-repositories/bomba_repository.py
-Consultas SQL de Sistema_Bombeo e Historia_Bombeo.
-
-Un "ciclo" de bombeo es una fila de Historia_Bombeo:
-  - Cuando la bomba se enciende  -> se inserta una fila con fecha_hora_apagado = NULL
-  - Cuando la bomba se apaga     -> se completa esa fila con la hora y los litros inyectados
-"""
 from database import conexion
 from models.bomba import SistemaBombeo
 
@@ -23,14 +15,11 @@ def _fila_a_bomba(fila):
     )
 
 
-# Columnas de Sistema_Bombeo. Se usa un alias en minúsculas porque en la base
-# la columna se llama caudal_L_s y pyodbc distingue mayúsculas al leer.
 _COLUMNAS_BOMBA = ("b.id_bomba, b.id_reservorio, b.nombre, b.modelo, "
                    "b.caudal_L_s AS caudal_l_s, b.consumo_kw, b.estado, b.horas_iniciales")
 
 
 class BombaRepository:
-
     def listar(self):
         filas = conexion.consultar(
             f"SELECT {_COLUMNAS_BOMBA}, r.nombre AS nombre_reservorio, r.ubicacion "
@@ -54,9 +43,7 @@ class BombaRepository:
             return None
         return _fila_a_bomba(filas[0])
 
-    # ---------- Ciclos de encendido / apagado ----------
     def obtener_ciclo_abierto(self, id_bomba):
-        """Devuelve (id_historial, fecha_encendido) del ciclo en curso, o None si está apagada."""
         filas = conexion.consultar(
             "SELECT TOP 1 id_historial, fecha_hora_encendido FROM Historia_Bombeo "
             "WHERE id_bomba = ? AND fecha_hora_apagado IS NULL "
@@ -81,7 +68,6 @@ class BombaRepository:
         )
 
     def contar_ciclos_ultima_hora(self, id_bomba, ahora):
-        """Cuántas veces se encendió la bomba en los últimos 60 minutos."""
         filas = conexion.consultar(
             "SELECT COUNT(*) AS total FROM Historia_Bombeo "
             "WHERE id_bomba = ? AND fecha_hora_encendido >= DATEADD(MINUTE, -60, ?)",
@@ -90,7 +76,6 @@ class BombaRepository:
         return filas[0].total
 
     def horas_operacion(self, id_bomba, horas_iniciales, ahora):
-        """Horas iniciales + suma de la duración de todos los ciclos registrados."""
         filas = conexion.consultar(
             "SELECT ISNULL(SUM(DATEDIFF(SECOND, fecha_hora_encendido, "
             "                           ISNULL(fecha_hora_apagado, ?))), 0) AS segundos "

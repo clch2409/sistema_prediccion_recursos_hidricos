@@ -6,9 +6,7 @@ Proyecto en Python con arquitectura **MVC** (Tkinter + SQL Server + MQTT).
 
 1. Instala las librerías: `pip install -r requirements.txt`
 2. Instala el *ODBC Driver 17 for SQL Server* (o cambia `DRIVER_SQL` en `config.py`).
-3. Base de datos `SISTEMA_RECURSOS_HIDRICOS`:
-   - Nueva: ejecuta `database/script_bd.sql` (solo crea las tablas; tendrás que insertar tus datos).
-   - Ya creada con `id_modulo` numérico: ejecuta `database/migracion_id_modulo.sql`.
+3. Ejecuta `database/script_bd.sql` en SSMS: crea la base `SISTEMA_RECURSOS_HIDRICOS` y sus tablas (`id_modulo` es VARCHAR). Solo crea la estructura; tendrás que insertar tus datos.
 4. Edita `config.py`: pon el nombre de tu servidor SQL en `SERVIDOR_SQL`.
 5. Registra en `Modulo` tus dispositivos con su código como `id_modulo` (ej: `EMI-B4F53904A7AC`, `REC-066CFF5748755750`).
 6. Ejecuta: `python main.py` (necesitas un usuario en la tabla `Usuarios`).
@@ -20,7 +18,7 @@ Proyecto en Python con arquitectura **MVC** (Tkinter + SQL Server + MQTT).
 main.py                     -> arma el sistema y abre la ventana
 config.py                   -> broker, base de datos y reglas de negocio
 database/                   -> conexion.py (pyodbc) y script_bd.sql
-models/                     -> clases con los datos (Reservorio, Modulo, Lectura, ...)   [M]
+models/                     -> clases con atributos privados, properties y validaciones (Reservorio, Modulo, Lectura, ...)   [M]
 repositories/               -> consultas SQL, devuelven objetos de models/
 services/                   -> mqtt_service.py, bombeo_service.py, prediccion_service.py
 controllers/                -> reciben datos (MQTT o ventana), aplican reglas, usan repositories [C]

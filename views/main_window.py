@@ -1,8 +1,3 @@
-"""
-views/main_window.py
-Ventana principal: menú lateral a la izquierda y la pantalla elegida a la derecha.
-También tiene el "reloj" que cada 5 segundos revisa los latidos y refresca la pantalla visible.
-"""
 import tkinter as tk
 from tkinter import ttk
 
@@ -16,14 +11,11 @@ from views.reservorios_view import ReservoriosView
 
 
 class VentanaPrincipal(ttk.Frame):
-
     def __init__(self, raiz, controladores):
-        """'controladores' es un diccionario creado en main.py."""
         super().__init__(raiz)
         self.raiz = raiz
         self.controladores = controladores
 
-        # Título superior
         tk.Label(self, text="Sistema de Gestión y Predicción de Reservas Hídricas",
                  bg=c.COLOR_FONDO_TITULO, fg="white", font=("Arial", 16, "bold"),
                  pady=12).pack(fill="x")
@@ -31,16 +23,13 @@ class VentanaPrincipal(ttk.Frame):
         cuerpo = ttk.Frame(self)
         cuerpo.pack(fill="both", expand=True)
 
-        # Menú lateral
         menu = tk.Frame(cuerpo, bg="white", width=190)
         menu.pack(side="left", fill="y")
         menu.pack_propagate(False)
 
-        # Zona donde se muestran las pantallas
         self.zona = ttk.Frame(cuerpo)
         self.zona.pack(side="left", fill="both", expand=True)
 
-        # Creamos todas las pantallas una sola vez y las apilamos
         self.pantallas = {
             "DASHBOARD": DashboardView(self.zona, controladores["dashboard"]),
             "RESERVORIOS": ReservoriosView(self.zona, controladores["reservorio"]),
@@ -62,7 +51,6 @@ class VentanaPrincipal(ttk.Frame):
         self._refrescar()
 
     def mostrar(self, nombre):
-        """Trae al frente la pantalla elegida y pinta de verde su botón."""
         self.pantalla_actual = nombre
         self.pantallas[nombre].tkraise()
         for n, boton in self.botones.items():
@@ -70,7 +58,6 @@ class VentanaPrincipal(ttk.Frame):
         self.pantallas[nombre].actualizar()
 
     def _refrescar(self):
-        """Se ejecuta cada INTERVALO_REFRESCO_MS: revisa latidos y actualiza la pantalla."""
         try:
             self.controladores["mensajes"].revisar_latidos()
             self.pantallas[self.pantalla_actual].actualizar()

@@ -1,13 +1,3 @@
-"""
-simulador_emisor.py - Herramienta de PRUEBA (no forma parte del sistema).
-Publica JSON falsos en HiveMQ imitando a los circuitos emisores, para probar la aplicación
-sin tener el hardware. Ejecutar en otra terminal:  python simulador_emisor.py
-
-IMPORTANTE: los códigos de EMISOR_ID / RECEPTOR_ID deben existir en la tabla Modulo
-(columna id_modulo) y el módulo debe pertenecer al reservorio indicado.
-
-Nota: el usuario MQTT debe tener permiso de publicar en HiveMQ.
-"""
 import json
 import random
 import time
@@ -16,11 +6,10 @@ import paho.mqtt.client as mqtt
 
 import config
 
-# --- EDITA ESTOS DATOS con módulos que existan en tu base de datos ---
-ID_RESERVORIO = 1                              # número usado en el topic: reservorio/1/datos
+ID_RESERVORIO = 1
 EMISOR_ID = "EMI-B4F53904A7AC"
 RECEPTOR_ID = "REC-066CFF5748755750"
-CAPACIDAD_LITROS = 700000                      # capacidad del reservorio en litros
+CAPACIDAD_LITROS = 700000
 
 nivel = 60.0
 bomba_encendida = False
@@ -33,13 +22,11 @@ client.loop_start()
 
 print("Simulando... (Ctrl+C para detener)")
 while True:
-    # Si la bomba está encendida el nivel sube; si no, baja por el consumo
     if bomba_encendida:
         nivel = min(100, nivel + random.uniform(0.5, 1.5))
     else:
         nivel = max(0, nivel - random.uniform(0.2, 0.8))
 
-    # Reglas simples para encender / apagar la bomba simulada
     if nivel < 30:
         bomba_encendida = True
     if nivel > 85:

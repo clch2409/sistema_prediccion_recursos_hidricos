@@ -1,4 +1,3 @@
-"""views/predicciones_view.py - Predicción de cuándo se vacía un reservorio (con gráfico)."""
 import tkinter as tk
 from tkinter import ttk
 
@@ -9,13 +8,11 @@ from views import componentes as c
 
 
 class PrediccionesView(ttk.Frame):
-
     def __init__(self, padre, prediccion_controller):
         super().__init__(padre)
         self.controller = prediccion_controller
         self.reservorios = []
 
-        # ---------- Fila superior: selector + tarjetas ----------
         arriba = ttk.Frame(self)
         arriba.pack(fill="x", padx=8, pady=8)
 
@@ -28,7 +25,6 @@ class PrediccionesView(ttk.Frame):
         self.lbl_dias = self._crear_tarjeta(arriba, "DÍAS RESTANTES", 2)
         self.lbl_consumo = self._crear_tarjeta(arriba, "CONSUMO PROMEDIO", 3)
 
-        # ---------- Gráfico ----------
         self.figura = Figure(figsize=(7, 3.6), dpi=100)
         self.eje = self.figura.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(self.figura, master=self)
@@ -42,7 +38,6 @@ class PrediccionesView(ttk.Frame):
         return etiqueta
 
     def _cargar_combo(self):
-        """Llena el combo solo la primera vez (para no perder la selección del usuario)."""
         if self.reservorios:
             return
         self.reservorios = self.controller.listar_reservorios()

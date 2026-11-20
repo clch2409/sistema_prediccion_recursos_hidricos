@@ -1,11 +1,6 @@
-"""
-views/componentes.py
-Pequeñas funciones para no repetir código de Tkinter en todas las pantallas.
-"""
 import tkinter as tk
 from tkinter import ttk
 
-# Colores del proyecto (los de la presentación)
 COLOR_FONDO_TITULO = "#1d3f66"
 COLOR_BOTON = "#1d3a5c"
 COLOR_BOTON_ACTIVO = "#059669"
@@ -16,7 +11,6 @@ COLOR_ALERTA_FONDO = "#2a1a1a"
 
 
 def crear_tabla(padre, columnas, anchos):
-    """Crea un Treeview (tabla) con scroll. 'columnas' y 'anchos' son listas del mismo tamaño."""
     marco = ttk.Frame(padre)
     tabla = ttk.Treeview(marco, columns=columnas, show="headings", height=12)
     for columna, ancho in zip(columnas, anchos):
@@ -26,14 +20,12 @@ def crear_tabla(padre, columnas, anchos):
     tabla.configure(yscrollcommand=barra.set)
     tabla.pack(side="left", fill="both", expand=True)
     barra.pack(side="right", fill="y")
-    # Etiquetas de color para pintar filas / textos
     tabla.tag_configure("ok", foreground=COLOR_OK)
     tabla.tag_configure("malo", foreground=COLOR_MALO)
     return marco, tabla
 
 
 def llenar_tabla(tabla, filas):
-    """Borra el contenido y agrega las filas nuevas. Cada fila es (valores, etiqueta)."""
     for item in tabla.get_children():
         tabla.delete(item)
     for valores, etiqueta in filas:
@@ -41,7 +33,6 @@ def llenar_tabla(tabla, filas):
 
 
 def formatear_fecha(fecha):
-    """Convierte un datetime en texto dd/mm/aaaa hh:mm (o '-' si no hay fecha)."""
     if fecha is None:
         return "-"
     return fecha.strftime("%d/%m/%Y %H:%M")

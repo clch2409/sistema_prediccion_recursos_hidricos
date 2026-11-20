@@ -1,11 +1,9 @@
-"""views/reservorios_view.py - Tabla con todos los reservorios y su último nivel."""
 from tkinter import ttk
 
 from views import componentes as c
 
 
 class ReservoriosView(ttk.Frame):
-
     def __init__(self, padre, reservorio_controller):
         super().__init__(padre)
         self.controller = reservorio_controller

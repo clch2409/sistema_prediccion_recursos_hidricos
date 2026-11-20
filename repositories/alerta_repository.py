@@ -1,12 +1,9 @@
-"""repositories/alerta_repository.py - Consultas SQL de la tabla Alertas."""
 from database import conexion
 from models.alerta import Alerta
 
 
 class AlertaRepository:
-
     def existe_pendiente(self, id_modulo, tipo_alerta):
-        """True si ya hay una alerta de ese tipo sin resolver para el módulo."""
         filas = conexion.consultar(
             "SELECT COUNT(*) AS total FROM Alertas "
             "WHERE id_modulo = ? AND tipo_alerta = ? AND resuelta = 0",
@@ -21,7 +18,6 @@ class AlertaRepository:
         )
 
     def resolver(self, id_modulo, tipo_alerta):
-        """Marca como resueltas las alertas pendientes de ese tipo para el módulo."""
         conexion.ejecutar(
             "UPDATE Alertas SET resuelta = 1 "
             "WHERE id_modulo = ? AND tipo_alerta = ? AND resuelta = 0",
