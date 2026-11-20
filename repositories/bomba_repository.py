@@ -34,6 +34,34 @@ class BombaRepository:
             bombas.append(bomba)
         return bombas
 
+    def obtener_por_id(self, id_bomba):
+        filas = conexion.consultar(
+            f"SELECT {_COLUMNAS_BOMBA} FROM Sistema_Bombeo b WHERE b.id_bomba = ?",
+            (id_bomba,)
+        )
+        if not filas:
+            return None
+        return _fila_a_bomba(filas[0])
+
+    def insertar(self, bomba):
+        conexion.ejecutar(
+            "INSERT INTO Sistema_Bombeo (id_reservorio, nombre, modelo, caudal_L_s, consumo_kw, "
+            "estado, horas_iniciales) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (bomba.id_reservorio, bomba.nombre, bomba.modelo, bomba.caudal_l_s, bomba.consumo_kw,
+             1 if bomba.estado else 0, bomba.horas_iniciales),
+        )
+
+    def actualizar(self, bomba):
+        conexion.ejecutar(
+            "UPDATE Sistema_Bombeo SET id_reservorio = ?, nombre = ?, modelo = ?, caudal_L_s = ?, "
+            "consumo_kw = ?, estado = ?, horas_iniciales = ? WHERE id_bomba = ?",
+            (bomba.id_reservorio, bomba.nombre, bomba.modelo, bomba.caudal_l_s, bomba.consumo_kw,
+             1 if bomba.estado else 0, bomba.horas_iniciales, bomba.id_bomba),
+        )
+
+    def eliminar(self, id_bomba):
+        conexion.ejecutar("DELETE FROM Sistema_Bombeo WHERE id_bomba = ?", (id_bomba,))
+
     def obtener_por_reservorio(self, id_reservorio):
         filas = conexion.consultar(
             f"SELECT {_COLUMNAS_BOMBA} FROM Sistema_Bombeo b WHERE b.id_reservorio = ?",

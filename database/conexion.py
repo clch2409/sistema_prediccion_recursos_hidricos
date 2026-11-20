@@ -2,6 +2,9 @@ import pyodbc
 
 import config
 
+# Error que lanza SQL Server al violar una llave foránea o un UNIQUE
+ErrorIntegridad = pyodbc.IntegrityError
+
 
 def obtener_conexion():
     return pyodbc.connect(config.CADENA_CONEXION)

@@ -6,7 +6,7 @@ class SistemaBombeo:
                  horas_iniciales=0, horas_operacion=0, ciclos_ultima_hora=0,
                  nombre_reservorio="", ubicacion=""):
         self.__id_bomba = id_bomba
-        self.__id_reservorio = id_reservorio
+        self.id_reservorio = id_reservorio
         self.nombre = nombre
         self.modelo = modelo
         self.caudal_l_s = caudal_l_s
@@ -26,6 +26,12 @@ class SistemaBombeo:
     def id_reservorio(self):
         return self.__id_reservorio
 
+    @id_reservorio.setter
+    def id_reservorio(self, valor):
+        if valor is None:
+            raise ValueError("Seleccione el reservorio")
+        self.__id_reservorio = int(valor)
+
     @property
     def nombre(self):
         return self.__nombre
@@ -34,7 +40,9 @@ class SistemaBombeo:
     def nombre(self, valor):
         if valor is None or not str(valor).strip():
             raise ValueError("El nombre de la bomba no puede estar vacío")
-        self.__nombre = valor
+        if len(str(valor).strip()) > 100:
+            raise ValueError("El nombre de la bomba no puede superar los 100 caracteres")
+        self.__nombre = str(valor).strip()
 
     @property
     def modelo(self):
@@ -42,7 +50,11 @@ class SistemaBombeo:
 
     @modelo.setter
     def modelo(self, valor):
-        self.__modelo = valor
+        if valor is None or not str(valor).strip():
+            raise ValueError("El modelo de la bomba no puede estar vacío")
+        if len(str(valor).strip()) > 100:
+            raise ValueError("El modelo de la bomba no puede superar los 100 caracteres")
+        self.__modelo = str(valor).strip()
 
     @property
     def caudal_l_s(self):
@@ -50,6 +62,8 @@ class SistemaBombeo:
 
     @caudal_l_s.setter
     def caudal_l_s(self, valor):
+        if valor is not None and float(valor) < 0:
+            raise ValueError("El caudal no puede ser negativo")
         self.__caudal_l_s = float(valor or 0)
 
     @property
@@ -58,6 +72,8 @@ class SistemaBombeo:
 
     @consumo_kw.setter
     def consumo_kw(self, valor):
+        if valor is not None and float(valor) < 0:
+            raise ValueError("El consumo no puede ser negativo")
         self.__consumo_kw = float(valor or 0)
 
     @property

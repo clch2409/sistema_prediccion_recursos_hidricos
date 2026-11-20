@@ -38,3 +38,22 @@ class ReservorioRepository:
         if not filas:
             return None
         return _fila_a_reservorio(filas[0])
+
+    def insertar(self, reservorio):
+        conexion.ejecutar(
+            "INSERT INTO Reservorio (nombre, capacidad_maxima, ubicacion, fecha_construccion) "
+            "VALUES (?, ?, ?, ?)",
+            (reservorio.nombre, reservorio.capacidad_maxima, reservorio.ubicacion,
+             reservorio.fecha_construccion),
+        )
+
+    def actualizar(self, reservorio):
+        conexion.ejecutar(
+            "UPDATE Reservorio SET nombre = ?, capacidad_maxima = ?, ubicacion = ?, "
+            "fecha_construccion = ? WHERE id_reservorio = ?",
+            (reservorio.nombre, reservorio.capacidad_maxima, reservorio.ubicacion,
+             reservorio.fecha_construccion, reservorio.id_reservorio),
+        )
+
+    def eliminar(self, id_reservorio):
+        conexion.ejecutar("DELETE FROM Reservorio WHERE id_reservorio = ?", (id_reservorio,))

@@ -21,7 +21,9 @@ class Reservorio:
     def nombre(self, valor):
         if valor is None or not str(valor).strip():
             raise ValueError("El nombre del reservorio no puede estar vacío")
-        self.__nombre = valor
+        if len(str(valor).strip()) > 100:
+            raise ValueError("El nombre del reservorio no puede superar los 100 caracteres")
+        self.__nombre = str(valor).strip()
 
     @property
     def capacidad_maxima(self):
@@ -39,6 +41,8 @@ class Reservorio:
 
     @ubicacion.setter
     def ubicacion(self, valor):
+        if valor is not None and len(str(valor)) > 150:
+            raise ValueError("La ubicación no puede superar los 150 caracteres")
         self.__ubicacion = valor
 
     @property
